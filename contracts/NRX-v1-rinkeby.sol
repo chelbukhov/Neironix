@@ -1,3 +1,7 @@
+/**
+ * version for testing
+ * time parameters decrease
+ */
 pragma solidity ^0.4.23;
 
 
@@ -384,18 +388,24 @@ contract Crowdsale is Ownable {
         * Unix timestamp 01/09/2018 - 1535760000
         */
 
-        preSaleStartTime = 1535760000;
-        preSaleEndTime = preSaleStartTime + 14 days;
-        crowdSaleStartTime = preSaleStartTime + 29 days;
-        crowdSaleEndTime = preSaleStartTime + 59 days;
+        //!!! test version!!!
+        preSaleStartTime = 1531267200; //11-07-2018
+        preSaleEndTime = preSaleStartTime + 1 days;
+        crowdSaleStartTime = preSaleStartTime + 2 days;
+        crowdSaleEndTime = preSaleStartTime + 3 days;
+
+        //preSaleStartTime = 1535760000;
+        //preSaleEndTime = preSaleStartTime + 14 days;
+        //crowdSaleStartTime = preSaleStartTime + 29 days;
+        //crowdSaleEndTime = preSaleStartTime + 59 days;
         
         
     }
     
     function setRate(uint _newRate) public onlyOwner {
         /**
-         * @dev Enter the amount of tokens per 1 ether
-         */
+        * @dev Enter the amount of tokens per 1 ether
+        */
         tokenRate = _newRate;
     }
 
@@ -461,7 +471,7 @@ contract Crowdsale is Ownable {
         uint256 value = _value;
         require (value >= 1);
         value = value.mul(1 ether);
-        require (now >= preSaleStartTime + 182 days, "only after 182 days");
+        require (now >= preSaleStartTime + 3 days, "only after 3 days");
         token.acceptTokens(address(holdAddress2), value);    
         return true;
     } 
@@ -475,7 +485,7 @@ contract Crowdsale is Ownable {
         uint256 value = _value;
         require (value >= 1);
         value = value.mul(1 ether);
-        require (now >= preSaleStartTime + 182 days, "only after 182 days");
+        require (now >= preSaleStartTime + 3 days, "only after 3 days");
         token.acceptTokens(address(holdAddress3), value);    
         return true;
     } 
@@ -489,7 +499,7 @@ contract Crowdsale is Ownable {
         uint256 value = _value;
         require (value >= 1);
         value = value.mul(1 ether);
-        require (now >= preSaleStartTime + 182 days, "only after 182 days");
+        require (now >= preSaleStartTime + 3 days, "only after 3 days");
         token.acceptTokens(address(holdAddress4), value);    
         return true;
     }     
