@@ -1,2 +1,8 @@
-rinkeby
+rinkeby deploy
 https://rinkeby.etherscan.io/tx/0xc130ce8c9df0f3e7a89b8f238a4565026880be538ea47719e31afe8b0eeaec41
+
+contract
+https://rinkeby.etherscan.io/address/0xb7281d691c29808a11d3cc2ccafd583ff40cee8c
+
+token
+https://rinkeby.etherscan.io/token/0x974d7f12abb1261cba9b199152e8659738cb320a

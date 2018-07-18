@@ -64,13 +64,13 @@ describe('Серия тестов для проверки функций кон�
 
     });
 
-    // увеличиваем время в ganache-cli на 53 дней - до 1 сентября
+    // увеличиваем время в ganache-cli на 47 дней - до 1 сентября
     it('increase time for 53 days', async () => {
         const myVal = await new Promise((resolve, reject) =>
         web3.currentProvider.sendAsync({
             jsonrpc: "2.0",
             method: "evm_increaseTime",
-            params: [60 * 60 * 24 * 53],
+            params: [60 * 60 * 24 * 47],
             id: new Date().getTime()
         }, (error, result) => error ? reject(error) : resolve(result.result))
     );
@@ -605,12 +605,12 @@ describe('Серия тестов для проверки адресов-дер�
     });
 
     // увеличиваем время в ganache-cli на 53 дней - до 1 сентября
-    it('increase time for 53 days', async () => {
+    it('increase time for 47 days', async () => {
         const myVal = await new Promise((resolve, reject) =>
         web3.currentProvider.sendAsync({
             jsonrpc: "2.0",
             method: "evm_increaseTime",
-            params: [60 * 60 * 24 * 53],
+            params: [60 * 60 * 24 * 47],
             id: new Date().getTime()
         }, (error, result) => error ? reject(error) : resolve(result.result))
     );
@@ -669,7 +669,7 @@ describe('Серия тестов для проверки адресов-дер�
             assert(false);
         }
     });
-    it('Проверка остатка токенов на account[9]...', async () => {
+    it('Проверка остатка токенов на account[9] - 2000...', async () => {
         let tokenBalance = await token.methods.balanceOf(accounts[9]).call();
         tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
         assert(tokenBalance == 2000);
@@ -687,7 +687,6 @@ describe('Серия тестов для проверки адресов-дер�
             assert(error);
         }
     });
-
     it('Проверка перевода токенов с адреса партнеров - должен отбить (холд) ...', async () => {
         try {
             let result = await contract.methods.transferTokensFromPartnersAddress(accounts[9], 1000).send({
@@ -699,7 +698,6 @@ describe('Серия тестов для проверки адресов-дер�
             assert(error);
         }
     });
-
     it('Проверка перевода токенов с адреса адвизоров - должен отбить (холд) ...', async () => {
         try {
             let result = await contract.methods.transferTokensFromAdvisorsAddress(accounts[9], 1000).send({
@@ -711,7 +709,6 @@ describe('Серия тестов для проверки адресов-дер�
             assert(error);
         }
     });
-
     it('increase time for 180 days', async () => {
         const myVal = await new Promise((resolve, reject) =>
         web3.currentProvider.sendAsync({
@@ -746,6 +743,7 @@ describe('Серия тестов для проверки адресов-дер�
     );
     });
 
+
     it('Проверка перевода токенов с адреса команды ...', async () => {
         try {
             let result = await contract.methods.transferTokensFromTeamAddress(accounts[9], 1000).send({
@@ -757,6 +755,8 @@ describe('Серия тестов для проверки адресов-дер�
             assert(false);
         }
     });
+
+
 
     it('Проверка перевода токенов с адреса партнеров ...', async () => {
         try {
