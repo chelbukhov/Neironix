@@ -6,3 +6,12 @@ https://rinkeby.etherscan.io/address/0xb7281d691c29808a11d3cc2ccafd583ff40cee8c
 
 token
 https://rinkeby.etherscan.io/token/0x974d7f12abb1261cba9b199152e8659738cb320a
+
+rinkeby версия 3 после изменений:
+https://rinkeby.etherscan.io/tx/0x0f066376af05b28555938c57037fd1ae9f8585b1cb38a9b24b77c072705e87dc
+
+contract
+https://rinkeby.etherscan.io/address/0x747420582edf80777d202346e3a4008aa1f78591
+
+token
+https://rinkeby.etherscan.io/token/0x6a6997a0aeeb0c8a2fed1368e49062fb18171126

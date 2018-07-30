@@ -51,9 +51,9 @@ describe('Серия тестов для проверки функций кон�
         assert(myState == 0);
     });
 
-    it('Запускаем Sale Stage от собственника - должен отбить, так как время еще не пришло...', async () => {
+    it('Запускаем Pre-Sale от собственника - должен отбить, так как время еще не пришло...', async () => {
         try {
-            await contract.methods.startSale().send({
+            await contract.methods.startPreSale().send({
                 from: accounts[0],
                 gas: "1000000"
             });
@@ -64,21 +64,21 @@ describe('Серия тестов для проверки функций кон�
 
     });
 
-    // увеличиваем время в ganache-cli на 33 дней - до 1 сентября
-    it('increase time for 33 days', async () => {
+    // увеличиваем время в ganache-cli на 47 дней - до 1 сентября
+    it('increase time for 53 days', async () => {
         const myVal = await new Promise((resolve, reject) =>
         web3.currentProvider.sendAsync({
             jsonrpc: "2.0",
             method: "evm_increaseTime",
-            params: [60 * 60 * 24 * 33],
+            params: [60 * 60 * 24 * 47],
             id: new Date().getTime()
         }, (error, result) => error ? reject(error) : resolve(result.result))
     );
     });
 
-    it('Запускаем Sale stage от собственника - должен отбить, т.к. адрес Neironix не установлен...', async () => {
+    it('Запускаем Pre-Sale от собственника - должен отбить, т.к. адрес Neironix не установлен...', async () => {
         try {
-            await contract.methods.startSale().send({
+            await contract.methods.startPreSale().send({
                 from: accounts[0],
                 gas: "1000000"
             });
@@ -173,9 +173,9 @@ describe('Серия тестов для проверки функций кон�
         }
     });  
 
-    it('Запускаем Sale от собственника - должен принять...', async () => {
+    it('Запускаем Pre-Sale от собственника - должен принять...', async () => {
         try {
-            await contract.methods.startSale().send({
+            await contract.methods.startPreSale().send({
                 from: accounts[0],
                 gas: "1000000"
             });
@@ -185,7 +185,7 @@ describe('Серия тестов для проверки функций кон�
         }
     });
 
-    it('Получаем стадию контракта, должен быть CrowsSale', async () => {
+    it('Получаем стадию контракта, должен быть PreSale', async () => {
         const myState = await contract.methods.currentState().call({
             from: accounts[3],
             gas: "1000000"
@@ -288,20 +288,85 @@ describe('Серия тестов для проверки функций кон�
         console.log("Balance of account[7]: ", accBalance);
     });
 
-    it('Проверка поступления токенов на счет отправителя с учетом бонуса 35% = 942*10+35%=12717...', async () => {
+    it('Проверка поступления токенов на счет отправителя с учетом бонуса 35% = 3400*10+35%=45900...', async () => {
         let tokenBalance = await token.methods.balanceOf(accounts[9]).call();
         tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
-        assert(tokenBalance == 12717);
+        assert(tokenBalance == 45900);
         //console.log(tokenBalance);
     });
 
-    // увеличиваем время в ganache-cli на 31 дней
-    it('increase time for 31 days - 1 october', async () => {
+    // увеличиваем время в ganache-cli на 5 дней
+    it('increase time for 5 days - 5 september', async () => {
         const myVal = await new Promise((resolve, reject) =>
         web3.currentProvider.sendAsync({
             jsonrpc: "2.0",
             method: "evm_increaseTime",
-            params: [60 * 60 * 24 * 31],
+            params: [60 * 60 * 24 * 5],
+            id: new Date().getTime()
+        }, (error, result) => error ? reject(error) : resolve(result.result))
+    );
+    });
+
+    it('Проверяем бонус - должен быть 25%', async () => {
+        const myBonus = await contract.methods.setBonus().call({
+            from: accounts[3],
+            gas: "1000000"
+        });
+        assert(myBonus == 25);
+    });
+
+    // увеличиваем время в ganache-cli на 10 дней
+    it('increase time for 10 days - 15 september - pause', async () => {
+        const myVal = await new Promise((resolve, reject) =>
+        web3.currentProvider.sendAsync({
+            jsonrpc: "2.0",
+            method: "evm_increaseTime",
+            params: [60 * 60 * 24 * 10],
+            id: new Date().getTime()
+        }, (error, result) => error ? reject(error) : resolve(result.result))
+    );
+    });
+    
+    it('Переводим 1 эфир на контракт - должен отбить...', async () => {
+        try {
+            let funders = await contract.methods.AddBalanceContract().send({
+                    from: accounts[9],
+                    value: 1*10**18,
+                    gas: '1000000'
+                });
+            assert(false);
+        } catch (error) {
+            assert(error);
+        }
+    });
+
+    // увеличиваем время в ganache-cli на 16 дней
+    it('increase time for 16 days - 1 oktober', async () => {
+        const myVal = await new Promise((resolve, reject) =>
+        web3.currentProvider.sendAsync({
+            jsonrpc: "2.0",
+            method: "evm_increaseTime",
+            params: [60 * 60 * 24 * 16],
+            id: new Date().getTime()
+        }, (error, result) => error ? reject(error) : resolve(result.result))
+    );
+    });
+
+    it('Проверяем бонус - должен быть 20%', async () => {
+        const myBonus = await contract.methods.setBonus().call({
+            from: accounts[3],
+            gas: "1000000"
+        });
+        assert(myBonus == 20);
+    });
+    
+    // увеличиваем время в ganache-cli на 5 дней - 5 октября
+    it('increase time for 5 days - 5 october', async () => {
+        const myVal = await new Promise((resolve, reject) =>
+        web3.currentProvider.sendAsync({
+            jsonrpc: "2.0",
+            method: "evm_increaseTime",
+            params: [60 * 60 * 24 * 5],
             id: new Date().getTime()
         }, (error, result) => error ? reject(error) : resolve(result.result))
     );
@@ -315,7 +380,45 @@ describe('Серия тестов для проверки функций кон�
         assert(myBonus == 15);
     });
 
+    // увеличиваем время в ganache-cli на 5 дней - 10 октября
+    it('increase time for 5 days - 10 october', async () => {
+        const myVal = await new Promise((resolve, reject) =>
+        web3.currentProvider.sendAsync({
+            jsonrpc: "2.0",
+            method: "evm_increaseTime",
+            params: [60 * 60 * 24 * 5],
+            id: new Date().getTime()
+        }, (error, result) => error ? reject(error) : resolve(result.result))
+    );
+    });
 
+    it('Проверяем бонус - должен быть 10%', async () => {
+        const myBonus = await contract.methods.setBonus().call({
+            from: accounts[3],
+            gas: "1000000"
+        });
+        assert(myBonus == 10);
+    });    
+
+    // увеличиваем время в ganache-cli на 5 дней - 15 октября
+    it('increase time for 5 days - 15 october', async () => {
+        const myVal = await new Promise((resolve, reject) =>
+        web3.currentProvider.sendAsync({
+            jsonrpc: "2.0",
+            method: "evm_increaseTime",
+            params: [60 * 60 * 24 * 5],
+            id: new Date().getTime()
+        }, (error, result) => error ? reject(error) : resolve(result.result))
+    );
+    });
+
+    it('Проверяем бонус - должен быть 5%', async () => {
+        const myBonus = await contract.methods.setBonus().call({
+            from: accounts[3],
+            gas: "1000000"
+        });
+        assert(myBonus == 5);
+    }); 
 
     it('Переводим 1 эфир на контракт...', async () => {
         try {
@@ -329,10 +432,52 @@ describe('Серия тестов для проверки функций кон�
             assert(false);
         }
     });
-    it('Проверка поступления токенов на счет отправителя с учетом бонуса 15% = 12717 + (942 + 15%) = 13800,3...', async () => {
+    it('Проверка поступления токенов на счет отправителя с учетом бонуса 5% = 45900 + (3400 + 5%) = 49470...', async () => {
         let tokenBalance = await token.methods.balanceOf(accounts[9]).call();
         tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
-        assert(tokenBalance == 13800.3);
+        assert(tokenBalance == 49470);
+        //console.log(tokenBalance);
+    });
+
+
+
+    // увеличиваем время в ganache-cli на 5 дней - 20 октября
+    it('increase time for 5 days - 20 october', async () => {
+        const myVal = await new Promise((resolve, reject) =>
+        web3.currentProvider.sendAsync({
+            jsonrpc: "2.0",
+            method: "evm_increaseTime",
+            params: [60 * 60 * 24 * 5],
+            id: new Date().getTime()
+        }, (error, result) => error ? reject(error) : resolve(result.result))
+    );
+    });
+
+
+    it('Проверяем бонус - должен быть 0%', async () => {
+        const myBonus = await contract.methods.setBonus().call({
+            from: accounts[3],
+            gas: "1000000"
+        });
+        assert(myBonus == 0);
+    });     
+
+    it('Переводим 1 эфир на контракт...', async () => {
+        try {
+            let funders = await contract.methods.AddBalanceContract().send({
+                    from: accounts[9],
+                    value: 1*10**18,
+                    gas: '1000000'
+                });
+            assert(true);
+        } catch (error) {
+            assert(false);
+        }
+    });
+    it('Проверка поступления токенов на счет отправителя с учетом бонуса 0% = 49470 + 3400 =52870...', async () => {
+        let tokenBalance = await token.methods.balanceOf(accounts[9]).call();
+        tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
+        assert(tokenBalance == 52870);
         //console.log(tokenBalance);
     });
 
@@ -349,13 +494,13 @@ describe('Серия тестов для проверки функций кон�
  
     });
 
-    // увеличиваем время в ganache-cli на 61 дней - 1 декабря
-    it('increase time for 61 days - 1 december', async () => {
+    // увеличиваем время в ganache-cli на 10 дней - 30 октября
+    it('increase time for 10 days - 30 october', async () => {
         const myVal = await new Promise((resolve, reject) =>
         web3.currentProvider.sendAsync({
             jsonrpc: "2.0",
             method: "evm_increaseTime",
-            params: [60 * 60 * 24 * 61],
+            params: [60 * 60 * 24 * 10],
             id: new Date().getTime()
         }, (error, result) => error ? reject(error) : resolve(result.result))
     );
@@ -374,6 +519,12 @@ describe('Серия тестов для проверки функций кон�
         }
     });
 
+    it('Проверка остатка токенов на контракте - должно быть 194947130...', async () => {
+        let tokenBalance = await token.methods.balanceOf(contractAddress).call();
+        tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
+        assert(tokenBalance == 194947130);
+        //console.log(tokenBalance);
+    });
 
     it('finishCrowdsale...', async () => {
         try {
@@ -392,7 +543,7 @@ describe('Серия тестов для проверки функций кон�
             from: accounts[3],
             gas: "1000000"
         });
-        assert(myState == 2);
+        assert(myState == 3);
     });
 
     it('Проверка остатка токенов на контракте - должно быть 0...', async () => {
@@ -408,36 +559,7 @@ describe('Серия тестов для проверки функций кон�
             gas: "1000000"
         });
         myTotalSupply = web3.utils.fromWei(myTotalSupply, 'ether');
-        assert(myTotalSupply == 44813800.3);
-        console.log(myTotalSupply);
-    });
-
-    it('Проверка кол-ва токенов на accounts[9]...', async () => {
-        let tokenBalance = await token.methods.balanceOf(accounts[9]).call();
-        tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
-        //assert(tokenBalance == 12717);
-        console.log(tokenBalance);
-    });
-
-    it('Забираем токены у пользователя ...', async () => {
-        try {
-            let result = await contract.methods.acceptTokensFromUsers(accounts[9], "5000000000000000000000").send({
-                from: accounts[0],
-                gas: '1000000'
-            });
-            assert(true);            
-        } catch (error) {
-            assert(false);
-        }
-    });
-
-    it('Получаем переменную контракта totalSupply, должен измениться на 5000 ...', async () => {
-        let myTotalSupply = await token.methods.totalSupply().call({
-            from: accounts[3],
-            gas: "1000000"
-        });
-        myTotalSupply = web3.utils.fromWei(myTotalSupply, 'ether');
-        assert(myTotalSupply == 44808800.3);
+        assert(myTotalSupply == 105052870);
         //console.log(myTotalSupply);
     });
 
@@ -454,9 +576,6 @@ describe('Серия тестов для проверки функций кон�
     });
 
 });
-
-
-
 
 
 describe('Серия тестов для проверки адресов-держателей токенов команды, баунти и т.д...', () => {
@@ -485,13 +604,13 @@ describe('Серия тестов для проверки адресов-дер�
         );
     });
 
-    // увеличиваем время в ganache-cli на 33 дней - до 1 сентября
-    it('increase time for 33 days', async () => {
+    // увеличиваем время в ganache-cli на 53 дней - до 1 сентября
+    it('increase time for 47 days', async () => {
         const myVal = await new Promise((resolve, reject) =>
         web3.currentProvider.sendAsync({
             jsonrpc: "2.0",
             method: "evm_increaseTime",
-            params: [60 * 60 * 24 * 33],
+            params: [60 * 60 * 24 * 47],
             id: new Date().getTime()
         }, (error, result) => error ? reject(error) : resolve(result.result))
     );
@@ -509,9 +628,9 @@ describe('Серия тестов для проверки адресов-дер�
         }
     });
 
-    it('Запускаем Crowd-Sale от собственника - должен принять...', async () => {
+    it('Запускаем Pre-Sale от собственника - должен принять...', async () => {
         try {
-            await contract.methods.startSale().send({
+            await contract.methods.startPreSale().send({
                 from: accounts[0],
                 gas: "1000000"
             });
@@ -590,12 +709,12 @@ describe('Серия тестов для проверки адресов-дер�
             assert(error);
         }
     });
-    it('increase time for 180+91 days', async () => {
+    it('increase time for 180 days', async () => {
         const myVal = await new Promise((resolve, reject) =>
         web3.currentProvider.sendAsync({
             jsonrpc: "2.0",
             method: "evm_increaseTime",
-            params: [60 * 60 * 24 * (180+91)],
+            params: [60 * 60 * 24 * 180],
             id: new Date().getTime()
         }, (error, result) => error ? reject(error) : resolve(result.result))
     );
