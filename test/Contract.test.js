@@ -64,13 +64,63 @@ describe('Серия тестов для проверки функций кон�
 
     });
 
-    // увеличиваем время в ganache-cli на 33 дней - до 1 сентября
-    it('increase time for 33 days', async () => {
+    it('Проверка остатка токенов на адресе holdAddress1 9.8 млн...', async () => {
+        let myAddress = await contract.methods.holdAddress1().call();
+
+        let myBalance = await token.methods.balanceOf(myAddress).call();
+        myBalance = web3.utils.fromWei(myBalance, 'ether');
+        assert(myBalance == 9800000);
+        console.log("holdAddress1: ", myBalance);
+        //console.log("myAddress: ", myAddress);
+    });
+
+    it('Проверка остатка токенов на адресе holdAddress2 14 млн...', async () => {
+        let myAddress = await contract.methods.holdAddress2().call();
+
+        let myBalance = await token.methods.balanceOf(myAddress).call();
+        myBalance = web3.utils.fromWei(myBalance, 'ether');
+        assert(myBalance == 14000000);
+        console.log("holdAddress2: ", myBalance);
+        //console.log("myAddress: ", myAddress);
+    });
+
+    it('Проверка остатка токенов на адресе holdAddress3 14 млн...', async () => {
+        let myAddress = await contract.methods.holdAddress3().call();
+
+        let myBalance = await token.methods.balanceOf(myAddress).call();
+        myBalance = web3.utils.fromWei(myBalance, 'ether');
+        assert(myBalance == 14000000);
+        console.log("holdAddress3: ", myBalance);
+        //console.log("myAddress: ", myAddress);
+    });
+
+    it('Проверка остатка токенов на адресе holdAddress4 4.9 млн...', async () => {
+        let myAddress = await contract.methods.holdAddress4().call();
+
+        let myBalance = await token.methods.balanceOf(myAddress).call();
+        myBalance = web3.utils.fromWei(myBalance, 'ether');
+        assert(myBalance == 4900000);
+        console.log("holdAddress4: ", myBalance);
+        //console.log("myAddress: ", myAddress);
+    });
+
+    it('Проверка остатка токенов на адресе holdAddress5 4.2 млн...', async () => {
+        let myAddress = await contract.methods.holdAddress5().call();
+
+        let myBalance = await token.methods.balanceOf(myAddress).call();
+        myBalance = web3.utils.fromWei(myBalance, 'ether');
+        assert(myBalance == 4200000);
+        console.log("holdAddress5: ", myBalance);
+        //console.log("myAddress: ", myAddress);
+    });
+
+    // увеличиваем время в ganache-cli на 25 дней - до 1 сентября
+    it('increase time for 25 days', async () => {
         const myVal = await new Promise((resolve, reject) =>
         web3.currentProvider.sendAsync({
             jsonrpc: "2.0",
             method: "evm_increaseTime",
-            params: [60 * 60 * 24 * 33],
+            params: [60 * 60 * 24 * 25],
             id: new Date().getTime()
         }, (error, result) => error ? reject(error) : resolve(result.result))
     );
@@ -216,6 +266,7 @@ describe('Серия тестов для проверки функций кон�
             assert(true);
         } catch (error) {
             assert(false);
+            //console.log(error);
         }
     });
 
@@ -374,6 +425,23 @@ describe('Серия тестов для проверки функций кон�
         }
     });
 
+    it('Получаем переменную контракта totalSupply - 140 млн', async () => {
+        let myTotalSupply = await token.methods.totalSupply().call({
+            from: accounts[3],
+            gas: "1000000"
+        });
+        myTotalSupply = web3.utils.fromWei(myTotalSupply, 'ether');
+        assert(myTotalSupply == 140000000);
+        //console.log("totalSupply: ", myTotalSupply);
+    });
+
+    it('Проверка остатка токенов на контракте - должно быть более 93 млн...', async () => {
+        let tokenBalance = await token.methods.balanceOf(contractAddress).call();
+        tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
+        assert(tokenBalance > 93000000);
+        //console.log(tokenBalance);
+    });
+
 
     it('finishCrowdsale...', async () => {
         try {
@@ -408,8 +476,8 @@ describe('Серия тестов для проверки функций кон�
             gas: "1000000"
         });
         myTotalSupply = web3.utils.fromWei(myTotalSupply, 'ether');
-        assert(myTotalSupply == 44813800.3);
-        console.log(myTotalSupply);
+        assert(myTotalSupply == 46913800.3);
+        console.log("totalSupply2:", myTotalSupply);
     });
 
     it('Проверка кол-ва токенов на accounts[9]...', async () => {
@@ -437,8 +505,8 @@ describe('Серия тестов для проверки функций кон�
             gas: "1000000"
         });
         myTotalSupply = web3.utils.fromWei(myTotalSupply, 'ether');
-        assert(myTotalSupply == 44808800.3);
-        //console.log(myTotalSupply);
+        assert(myTotalSupply == 46908800.3);
+        console.log("totalSupply3:", myTotalSupply);
     });
 
     it('Проверка перевода токенов между пользователями ...', async () => {
@@ -485,13 +553,13 @@ describe('Серия тестов для проверки адресов-дер�
         );
     });
 
-    // увеличиваем время в ganache-cli на 33 дней - до 1 сентября
-    it('increase time for 33 days', async () => {
+    // увеличиваем время в ganache-cli на 25 дней - до 1 сентября
+    it('increase time for 25 days', async () => {
         const myVal = await new Promise((resolve, reject) =>
         web3.currentProvider.sendAsync({
             jsonrpc: "2.0",
             method: "evm_increaseTime",
-            params: [60 * 60 * 24 * 33],
+            params: [60 * 60 * 24 * 25],
             id: new Date().getTime()
         }, (error, result) => error ? reject(error) : resolve(result.result))
     );
@@ -550,6 +618,7 @@ describe('Серия тестов для проверки адресов-дер�
             assert(false);
         }
     });
+
     it('Проверка остатка токенов на account[9] - 2000...', async () => {
         let tokenBalance = await token.methods.balanceOf(accounts[9]).call();
         tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
@@ -579,6 +648,15 @@ describe('Серия тестов для проверки адресов-дер�
             assert(error);
         }
     });
+
+    it('Проверка остатка токенов на account[9] - ...', async () => {
+        let tokenBalance = await token.methods.balanceOf(accounts[9]).call();
+        tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
+        //assert(tokenBalance == 2000);
+        console.log("balance: ",tokenBalance);
+    });
+
+
     it('Проверка перевода токенов с адреса адвизоров - должен отбить (холд) ...', async () => {
         try {
             let result = await contract.methods.transferTokensFromAdvisorsAddress(accounts[9], 1000).send({
@@ -601,6 +679,14 @@ describe('Серия тестов для проверки адресов-дер�
     );
     });
 
+    it('Проверка остатка токенов на account[9] - ...', async () => {
+        let tokenBalance = await token.methods.balanceOf(accounts[9]).call();
+        tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
+        //assert(tokenBalance == 2000);
+        console.log("balance: ",tokenBalance);
+    });
+
+
     it('Проверка перевода токенов с адреса команды - должен отбить (все еще холд) ...', async () => {
         try {
             let result = await contract.methods.transferTokensFromTeamAddress(accounts[9], 1000).send({
@@ -612,6 +698,14 @@ describe('Серия тестов для проверки адресов-дер�
             assert(error);
         }
     });
+
+    it('Проверка остатка токенов на account[9] - ...', async () => {
+        let tokenBalance = await token.methods.balanceOf(accounts[9]).call();
+        tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
+        //assert(tokenBalance == 2000);
+        console.log("balance: ",tokenBalance);
+    });
+
 
     it('increase time for 3 days - it is half of the year', async () => {
         const myVal = await new Promise((resolve, reject) =>
@@ -667,7 +761,7 @@ describe('Серия тестов для проверки адресов-дер�
         let tokenBalance = await token.methods.balanceOf(accounts[9]).call();
         tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
         assert(tokenBalance == 5000);
-        //console.log(tokenBalance);
+        console.log("balance: ", tokenBalance);
     });
 
     it('Проверка смены курса...', async () => {
@@ -685,7 +779,37 @@ describe('Серия тестов для проверки адресов-дер�
     it('Проверка текущего курса...', async () => {
         let tokenRate = await contract.methods.tokenRate().call();
         assert(tokenRate == 5000);
-        //console.log(tokenBalance);
+    });
+
+    it('Завершаем период распродажи - finishCrowdsale...', async () => {
+        try {
+            await contract.methods.finishCrowdSale().send({
+                    from: accounts[0],
+                    gas: '1000000'
+                });
+            assert(true);
+        } catch (error) {
+            assert(false);
+        }
+    });  
+
+    it('Проверка перевода токенов с адреса фонда проекта ...', async () => {
+        try {
+            let result = await contract.methods.transferTokensFromProjectFundAddress(accounts[9], 1000).send({
+                from: accounts[0],
+                gas: '1000000'
+            });
+            assert(true);            
+        } catch (error) {
+            assert(false);
+        }
+    });
+
+    it('Проверка остатка токенов на account[9]...', async () => {
+        let tokenBalance = await token.methods.balanceOf(accounts[9]).call();
+        tokenBalance = web3.utils.fromWei(tokenBalance, 'ether');
+        assert(tokenBalance == 6000);
+        console.log("balance: ", tokenBalance);
     });
 
 });

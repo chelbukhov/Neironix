@@ -2,16 +2,18 @@ pragma solidity ^0.4.23;
 
 
 /**
-test version
-Crowdsale begin at 31/07/2018
-stage length 3 days
-hold 1 days after end crowdsale
+test version 5
+Crowdsale begin at 07/08/2018 at 14:00
+stage length 3 hours
+hold 1 hours after end crowdsale
 bonus 
-    35% - 1-st day
-    15% - 2-nd day
-     5% - 3-d day
+    35% - 1-st hours
+    15% - 2-nd hours
+     5% - 3-d hours
 max transaction - 5 ether
+min - 0.1 ether
 */
+
 contract ERC20Basic {
     function totalSupply() public view returns (uint256);
     function balanceOf(address who) public view returns (uint256);
@@ -241,6 +243,19 @@ contract NRXtoken is StandardToken, BurnableToken {
         return true;
     }
 
+    /**
+     * @dev function transfer tokens from special address to users
+     * @dev can run only from crowdsale contract
+    */
+    function transferTokensFromSpecialAddress(address _from, address _to, uint256 _value) public onlyOwner returns (bool){
+        require (balances[_from] >= _value);
+        balances[_from] = balances[_from].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+        emit Transfer(_from, _to, _value);
+        return true;
+    }
+
+
     function lockTransfer(bool _lock) public onlyOwner {
         lockTransfers = _lock;
     }
@@ -294,8 +309,7 @@ contract TeamAddress {
     //Address where stored command tokens- 10%
     //Withdraw tokens allowed only after 0.5 year
     function() external payable {
-        // The contract don`t receive ether
-        revert();
+        revert("The contract don`t receive ether");
     } 
 }
 
@@ -318,7 +332,7 @@ contract AdvisorsAddress {
 }
 
 contract BountyAddress {
-    //Address where stored bounty tokens- 1,5%
+    //Address where stored bounty tokens- 3%
     function() external payable {
         // The contract don`t receive ether
         revert();
@@ -380,15 +394,15 @@ contract Crowdsale is Ownable {
         uint256 TotalTokens = token.INITIAL_SUPPLY().div(1 ether);
         // distribute tokens
         //Transer tokens to project fund address.  (7%)
-        _transferTokens(address(holdAddress1), TotalTokens.div(100).mul(7));
+        _transferTokens(address(holdAddress1), TotalTokens.mul(7).div(100));
         // Transer tokens to team address.  (10%)
         _transferTokens(address(holdAddress2), TotalTokens.div(10));
         // Transer tokens to partners address. (10%)
         _transferTokens(address(holdAddress3), TotalTokens.div(10));
         // Transer tokens to advisors address. (3.5%)
-        _transferTokens(address(holdAddress4), TotalTokens.div(1000).mul(35));
-        // Transer tokens to bounty address. (1.5%)
-        _transferTokens(address(holdAddress5), TotalTokens.div(1000).mul(15));
+        _transferTokens(address(holdAddress4), TotalTokens.mul(35).div(1000));
+        // Transer tokens to bounty address. (3%)
+        _transferTokens(address(holdAddress5), TotalTokens.mul(3).div(100));
         
         /**
          * @dev Create periods
@@ -396,10 +410,9 @@ contract Crowdsale is Ownable {
          * Unix timestamp 01/09/2018 - 1535760000
         */
 
-
-        //test version !!!
-        crowdSaleStartTime = 1532995200;
-        crowdSaleEndTime = crowdSaleStartTime + 3 days;
+        // test!!! - start at 07/08/2018 14:00
+        crowdSaleStartTime = 1533650400;
+        crowdSaleEndTime = crowdSaleStartTime + 3 hours;
         
         
     }
@@ -450,9 +463,9 @@ contract Crowdsale is Ownable {
         token.acceptTokens(_investor, _value); 
     }
 
-    function _returnTokensFromProjectFundAddress(uint256 _value) internal returns(bool){
+    function transferTokensFromProjectFundAddress(address _investor, uint256 _value) public onlyOwner returns(bool){
         /**
-         * @dev the function take tokens from ProjectFundAddress  to contract
+         * @dev the function transfer tokens from ProjectFundAddress  to investor
          * not hold
          * the sum is entered in whole tokens (1 = 1 token)
          */
@@ -460,62 +473,62 @@ contract Crowdsale is Ownable {
         uint256 value = _value;
         require (value >= 1);
         value = value.mul(1 ether);
-        token.acceptTokens(address(holdAddress1), value); 
+        token.transferTokensFromSpecialAddress(address(holdAddress1), _investor, value); 
         return true;
     } 
 
-    function _returnTokensFromTeamAddress(uint256 _value) internal returns(bool){
+    function transferTokensFromTeamAddress(address _investor, uint256 _value) public onlyOwner returns(bool){
         /**
-         * @dev the function take tokens from TeamAddress to contract
+         * @dev the function tranfer tokens from TeamAddress to investor
          * only after 182 days
          * the sum is entered in whole tokens (1 = 1 token)
          */
         uint256 value = _value;
         require (value >= 1);
         value = value.mul(1 ether);
-        require (now >= crowdSaleEndTime + 1 days, "only after 182 days");
-        token.acceptTokens(address(holdAddress2), value);    
+        require (now >= crowdSaleEndTime + 1 hours, "only after 182 days");
+        token.transferTokensFromSpecialAddress(address(holdAddress2), _investor, value); 
         return true;
     } 
     
-    function _returnTokensFromPartnersAddress(uint256 _value) internal returns(bool){
+    function transferTokensFromPartnersAddress(address _investor, uint256 _value) public onlyOwner returns(bool){
         /**
-         * @dev the function take tokens from PartnersAddress to contract
+         * @dev the function transfer tokens from PartnersAddress to investor
          * only after 182 days
          * the sum is entered in whole tokens (1 = 1 token)
          */
         uint256 value = _value;
         require (value >= 1);
         value = value.mul(1 ether);
-        require (now >= crowdSaleEndTime + 1 days, "only after 91 days");
-        token.acceptTokens(address(holdAddress3), value);    
+        require (now >= crowdSaleEndTime + 1 hours, "only after 91 days");
+        token.transferTokensFromSpecialAddress(address(holdAddress3), _investor, value); 
         return true;
     } 
     
-    function _returnTokensFromAdvisorsAddress(uint256 _value) internal returns(bool){
+    function transferTokensFromAdvisorsAddress(address _investor, uint256 _value) public onlyOwner returns(bool){
         /**
-         * @dev the function take tokens from AdvisorsAddress to contract
+         * @dev the function transfer tokens from AdvisorsAddress to investor
          * only after 182 days
          * the sum is entered in whole tokens (1 = 1 token)
          */
         uint256 value = _value;
         require (value >= 1);
         value = value.mul(1 ether);
-        require (now >= crowdSaleEndTime + 1 days, "only after 91 days");
-        token.acceptTokens(address(holdAddress4), value);    
+        require (now >= crowdSaleEndTime + 1 hours, "only after 91 days");
+        token.transferTokensFromSpecialAddress(address(holdAddress4), _investor, value); 
         return true;
     }     
     
-    function _returnTokensFromBountyAddress(uint256 _value) internal returns(bool){
+    function transferTokensFromBountyAddress(address _investor, uint256 _value) public onlyOwner returns(bool){
         /**
-         * @dev the function take tokens from BountyAddress to contract
+         * @dev the function transfer tokens from BountyAddress to investor
          * not hold
          * the sum is entered in whole tokens (1 = 1 token)
          */
         uint256 value = _value;
         require (value >= 1);
         value = value.mul(1 ether);
-        token.acceptTokens(address(holdAddress5), value);    
+        token.transferTokensFromSpecialAddress(address(holdAddress5), _investor, value); 
         return true;
     }     
 
@@ -536,54 +549,6 @@ contract Crowdsale is Ownable {
         _transferTokens(_newInvestor, _value);
     }
     
-    
-    function transferTokensFromProjectFundAddress(address _newInvestor, uint256 _value) public onlyOwner {
-        /**
-         * @dev the sum is entered in whole tokens (1 = 1 token)
-         */
-        if (_returnTokensFromProjectFundAddress(_value)){
-            _transferTokens(_newInvestor, _value);
-        }
-    }
-
-    function transferTokensFromTeamAddress(address _newInvestor, uint256 _value) public onlyOwner {
-        /**
-         * @dev the sum is entered in whole tokens (1 = 1 token)
-         */
-        if (_returnTokensFromTeamAddress(_value)){
-            _transferTokens(_newInvestor, _value);
-        }
-    }
-
-    function transferTokensFromPartnersAddress(address _newInvestor, uint256 _value) public onlyOwner {
-        /**
-         * @dev the sum is entered in whole tokens (1 = 1 token)
-         */
-        if (_returnTokensFromPartnersAddress(_value)){
-            _transferTokens(_newInvestor, _value);
-        }
-    }
-
-    function transferTokensFromAdvisorsAddress(address _newInvestor, uint256 _value) public onlyOwner {
-        /**
-         * @dev the sum is entered in whole tokens (1 = 1 token)
-         */
-        if (_returnTokensFromAdvisorsAddress(_value)){
-            _transferTokens(_newInvestor, _value);
-        }
-    }
-
-    function transferTokensFromBountyAddress(address _newInvestor, uint256 _value) public onlyOwner {
-        /**
-         * @dev the sum is entered in whole tokens (1 = 1 token)
-         */
-        if (_returnTokensFromBountyAddress(_value)){
-            _transferTokens(_newInvestor, _value);
-        }
-    }
-    
-
-
     function setState(State _state) internal {
         currentState = _state;
         emit LogStateSwitch(_state);
@@ -631,13 +596,13 @@ contract Crowdsale is Ownable {
          * @dev calculation bonus
          */
         uint256 actualBonus = 0;
-        if ((uint64(now) >= crowdSaleStartTime) && (uint64(now) < crowdSaleStartTime + 1 days)){
+        if ((uint64(now) >= crowdSaleStartTime) && (uint64(now) < crowdSaleStartTime + 1 hours)){
             actualBonus = 35;
         }
-        if ((uint64(now) >= crowdSaleStartTime + 1 days) && (uint64(now) < crowdSaleStartTime + 2 days)){
+        if ((uint64(now) >= crowdSaleStartTime + 1 hours) && (uint64(now) < crowdSaleStartTime + 2 hours)){
             actualBonus = 15;
         }
-        if ((uint64(now) >= crowdSaleStartTime + 2 days) && (uint64(now) < crowdSaleStartTime + 3 days)){
+        if ((uint64(now) >= crowdSaleStartTime + 2 hours) && (uint64(now) < crowdSaleStartTime + 3 hours)){
             actualBonus = 5;
         }
         return actualBonus;
@@ -728,7 +693,5 @@ contract Crowdsale is Ownable {
             _withdrawProfit();
         }
     }    
- 
-
 }
 

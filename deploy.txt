@@ -15,3 +15,35 @@ https://rinkeby.etherscan.io/address/0x747420582edf80777d202346e3a4008aa1f78591
 
 token
 https://rinkeby.etherscan.io/token/0x6a6997a0aeeb0c8a2fed1368e49062fb18171126
+
+
+rinkeby версия 4:
+contract
+https://rinkeby.etherscan.io/address/0xeb5fc9deafbd5648b7d44b9664db53842adb9325#code
+
+token
+
+https://rinkeby.etherscan.io/token/0x07f7618d44fb0c1dbdbbc4cd30665defc94b985d
+
+rinkeby версия 5:
+
+create transaction
+https://rinkeby.etherscan.io/tx/0xdaec1a8eb20f055c8f78208b38a313f58e1dea6a5c3dcca43a4aa00eed7850fa
+
+contract
+https://rinkeby.etherscan.io/address/0x23af6638af4d26419efd5221069981f08d0a13fd
+
+token
+https://rinkeby.etherscan.io/token/0xe7853e13ef6f06222f0be85f54dcef4ce68ed7ae
+
+rinkeby версия 5(изменены временные параметры):
+create transaction
+https://rinkeby.etherscan.io/tx/0x938471a9a29f736a059a4249006231dfc663d3ae9bf71cdee311790bc687dca0
+
+contract
+https://rinkeby.etherscan.io/address/0xcd93cc947cd3899709fe6ccdb06e3a0c72b75720
+
+token
+https://rinkeby.etherscan.io/token/0x8a1e073f92919738766eb865581e4d6e94c76914
+
+
