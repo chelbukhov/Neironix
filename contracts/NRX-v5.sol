@@ -1,12 +1,6 @@
 pragma solidity ^0.4.23;
 
 
-/**
- * Version 5
- * Change Bounty to 3%
- * Change functions transfer tokens from special addresses (Advisors, Bounty etc)
-*/
-
 contract ERC20Basic {
     function totalSupply() public view returns (uint256);
     function balanceOf(address who) public view returns (uint256);
@@ -686,13 +680,6 @@ contract Crowdsale is Ownable {
             _withdrawProfit();
         }
     }    
- // !!!     убрать нижние функции перед развертыванием   !!!
 
-    function AddBalanceContract () public payable {
-        // для пополнения баланса при тестировании
-        if (_saleTokens()) {
-            _withdrawProfit();
-        }
-    }
 }
 

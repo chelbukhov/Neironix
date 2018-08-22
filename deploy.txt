@@ -47,3 +47,14 @@ token
 https://rinkeby.etherscan.io/token/0x8a1e073f92919738766eb865581e4d6e94c76914
 
 
+MainNet
+create transaction
+https://www.etherscan.io/tx/0xd7010a719096c7f968582390e0b04d06342798f26943b323fcec0cfabbf1d80f
+contract
+https://etherscan.io/address/0x05ca268db7beee6791c2145653f2083ac56fe232
+token
+https://etherscan.io/token/0x66fc757433782a20a7a6b6c2b9b1c5240fc5384c
+ABI
+00000000000000000000000005ca268db7beee6791c2145653f2083ac56fe232
+
+
